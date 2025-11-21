@@ -33,7 +33,6 @@ GitHub Actions will automatically run `score_submission.py` and post your score.
 **Prize Rules**
 - Must use **variance** (sigma²)
 - Must cover **all 352 stocks** and **T = 5,10,...,130 days**
-- Average R² ≥ 0.92 across all ticker-horizon pairs
 
 Good luck.
 
