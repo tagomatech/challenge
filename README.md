@@ -21,8 +21,22 @@ For example, to try a rough vol model, simulate paths with dV_t = -κ V_t dt + �
 
 Dataset: 352 S&P 500 stocks (1992+ history), 1–26 weeks T, ~300K rows. Columns: ticker (str), date (date), T (int), sigma (float, annualized vol), z (float, scaled log return).
 
-**How to Submit to the Q-Variance Challenge Leaderboard**
+## Scoring the Challenge
 
+The challenge scores submissions on **one global R²** over the **entire dataset** (all 352 stocks, all 26 horizons).
+
+### How Scoring Works
+1. **Load Submission**: `score_submission.py` reads your `prize_dataset.parquet` (must match format: ticker, date, T, z, sigma).
+2. **Compute Variance**: Converts sigma → var = sigma².
+3. **Global Binning**: Bins z from -0.6 to 0.6 (delz=0.025), averages var per bin (as in `baseline_fit.py` global plot).
+4. **Fit**: Fits var = σ₀² + z²/2 to binned averages, computes R².
+5. **Threshold**: R² ≥ 0.95 wins the challenge (baseline: 0.99).
+
+### Test Your Submission
+Run the test mode to score your Parquet:
+
+```bash
+python3 score_submission.py
 1. Fork this repository
 2. Place your model output in `submissions/your_team_name/` as:
    - `prize_dataset.parquet` (must have columns: ticker, date, T, z, sigma)
