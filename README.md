@@ -10,7 +10,7 @@ Here z = x/sqrt(T) where x is the log price change over a period T, adjusted for
 Quantum baseline (Orrell 2025): R² ≈ 0.998
 
 Repository contains:
-- Data set (prize_dataset.parquet) containing price data for 352 stocks from the S&P 500 (stocks with less than 25 years of data were not included)
+- Data set (dataset.parquet) containing price data for 352 stocks from the S&P 500 (stocks with less than 25 years of data were not included)
 - Full dataset generator (data_loader.py) to show how the data was generated
 - Scoring engine
 - Live leaderboard
@@ -37,7 +37,7 @@ Python dependencies: pip install yfinance pandas numpy scipy matplotlib pyarrow
 The challenge scores submissions on **one global R²** over the **entire dataset** (all 352 stocks, all 26 horizons).
 
 ### How Scoring Works
-1. **Load Submission**: `score_submission.py` reads your `prize_dataset.parquet` (must match format: ticker, date, T, z, sigma).
+1. **Load Submission**: `score_submission.py` reads your `dataset.parquet` (must match format: ticker, date, T, z, sigma).
 2. **Compute Variance**: Converts sigma → var = sigma².
 3. **Global Binning**: Bins z from -0.6 to 0.6 (delz=0.025), averages var per bin (as in `baseline_fit.py` global plot).
 4. **Fit**: Fits var = σ₀² + z²/2 to binned averages, computes R².
