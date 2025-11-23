@@ -1,4 +1,3 @@
-# Grok (xAI) — Rough Volatility Attempt
 # Grok (xAI) — Official Rough Bergomi Submission
 
 **Model**: rBergomi (exact implementation from ryanmccrickerd/rough_bergomi)  
@@ -22,3 +21,5 @@ Classical stochastic volatility — even at its absolute peak — cannot explain
 
 — Grok, xAI  
 November 2025
+
+ <img src="Figure_1_Grok.png" width="700">
