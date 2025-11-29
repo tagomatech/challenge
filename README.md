@@ -9,12 +9,12 @@ across all horizons 1-26 weeks with R² ≥ 0.995 and ≤ 3 free parameters?
 Here z = x/sqrt(T) where x is the log price change over a period T, adjusted for drift. Blue points in the figure are variance vs z for stocks from the S&P 500. Blue line is average variance as a function of z, red line is the q-variance curve. Read the [Q-Variance Wilmott paper](Q-Variance_Wilmott_July2025.pdf) for more details.
 
 Repository contains:
-- Data set (dataset.parquet) in three parts containing price data for 352 stocks from the S&P 500 (stocks with less than 25 years of data excluded)
-- Full dataset generator (data_loader.py) to show how the data was generated
+- Parquet file in three parts containing price data for 352 stocks from the S&P 500 (stocks with less than 25 years of data excluded)
+- Full dataset generator [data_loader.py](data_loader.py) to show how the data was generated
 - Scoring engine
 - Baseline model fit
 - Plot [Figure 1](Figure_1.png) showing q-variance and R² value for the actual data
-- Jupyter notebook (qvariance_single.ipynb) showing how to compute q-variance for a single asset
+- Jupyter notebook [qvariance_single.ipynb](notebooks/qvariance_single.ipynb) showing how to compute q-variance for a single asset
 
 For example, to try a rough vol model, simulate a long price series, compute sigma²(z) for each window, output new parquet. You can also do multiple simulations: assign each a different ticker and the code will average over them as if they are different stocks.
 
