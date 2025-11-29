@@ -80,11 +80,11 @@ A: In theory the curve should be time-invariant, though in practice there is a s
 
 Q: Is q-variance related to the implied volatility smile?
 
-A: Yes, however it is not the same thing because q-variance applies to realized volatility. But if you want to model implied volatility, a first step obviously is to understand realized volatility.
+A: Yes. It is not the same thing because q-variance applies to realized volatility – but if you want to model implied volatility, a first step obviously is to understand realized volatility.
 
 Q: Is q-variance related to the price-change distribution over a period?
 
-A: Yes, it implies that price-change follows the q-distribution which is a particular time-invariant, Poisson-weighted sum of Gaussians (see further reading below). [Figure 4](Figure_4.png) compares the q-distribution with the average distribution over the S&P 500 stocks, where the distribution of each stock has been normalized by its standard deviation for comparability. The time-invariance is illustrated in [Figure 5](Figure_5.png) for different periods T.
+A: Yes, it implies that price-change follows the q-distribution which is a particular time-invariant, Poisson-weighted sum of Gaussians (see further reading below). [Figure 4](Figure_4.png) compares the q-distribution with the average distribution over the S&P 500 stocks, where the distribution of each stock has been normalized by its standard deviation for comparability. The time-invariance is illustrated in [Figure 5](Figure_5.png) for different periods T. If your model matches q-variance and is time-invariant then it should produce the q-distribution.
 
 Q: Can I use AI for the challenge?
 
