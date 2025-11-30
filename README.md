@@ -10,7 +10,11 @@ $\sigma^2(z) = \sigma_0^2 + \frac{(z-z_0)^2}{2}$
 
 where $z = x/\sqrt{T}$, and $x$ is the log price change over a period $T$, adjusted for drift. The figure above illustrates q-variance for stocks from the S&P 500, and periods $T$ of 1-26 weeks. Blue points are variance vs $z$ for individual periods, blue line is average variance as a function of $z$, red line is the q-variance curve. Read the [Q-Variance Wilmott paper](Q-Variance_Wilmott_July2025.pdf) for more details.
 
-Repository contains:
+To take part in the challenge, use your model to produce a long time series of simulated price data, and score it as described below.
+
+## Repository Contents
+
+The repository contains:
 - Parquet file in three parts containing price data for 352 stocks from the S&P 500 (stocks with less than 25 years of data excluded)
 - Full dataset generator [data_loader.py](data_loader.py) to show how the data was generated
 - Baseline model fit [baseline_fit.py](baseline/baseline_fit.py)
@@ -18,9 +22,7 @@ Repository contains:
 - Scoring engine [score_submission.py](code/score_submission.py) for your model
 - Jupyter notebook [qvariance_single.ipynb](notebooks/qvariance_single.ipynb) showing how to compute q-variance for a single asset
 
-To get started, first simulate a long price series using your model, then use data_loader.py to compute $\sigma^2(z)$ for each window and output the new parquet. Finally, score the results using score_submission.py.
-
-The dataset used as a benchmark (~300K rows) is for 352 stocks from the S&P 500 (>25 year history), with periods T of 1–26 weeks T.  
+The dataset used as a benchmark is for 352 stocks from the S&P 500 (>25 year history), with periods T of 1–26 weeks.  
 
 Columns: ticker (str), date (date), T (int), sigma (float, annualized vol), z (float, scaled log return).
 
@@ -35,19 +37,13 @@ Python dependencies: pip install yfinance pandas numpy scipy matplotlib pyarrow
 
 The challenge scores submissions on **one global R²** over the **entire dataset**. Since the q-variance parabola with $\sigma_0=0.255$ and $z_0 = 0.02$ gives a near-perfect fit (R² = 0.998) this curve can be used as a proxy for the real data. In other words, the aim is to fit the two-parameter parabola, using **up to three parameters** – must be easy, right?
 
-### How Scoring Works
-1. **Load Submission**: `score_submission.py` reads your `dataset.parquet` (must match format: ticker, date, T, z, sigma).
-2. **Compute Variance**: Converts $\sigma$ → var = $\sigma^2$.
-3. **Global Binning**: Bins $z$ from -0.6 to 0.6, averages var per bin (as in `baseline_fit.py` global plot).
-4. **Fit**: Computes R² of your binned averages to the q-variance curve $\sigma^2(z) = \sigma_0^2 + (z-z_0)^2/2$.
-5. **Threshold**: R² ≥ 0.995 with no more than three free parameters (agreement of parabola with data is 0.998). The price-change distribution in $z$ should also be time-invariant, so the model should be independent of period length $T$.
+To get started, first simulate a long price series using your model, then use `data_loader.py` to compute the variances $\sigma^2(z)$ for each window and output the `dataset.parquet` file. The benchmark file has around 3 million rows, so you want a long simulation.
 
-### Test Your Submission
-Run the test mode to score your simulation data:
+Next, use `score_submission.py` to read your `dataset.parquet` (must match format: ticker, date, T, z, sigma). This will bin the values of $z$ in range from -0.6 to 0.6, and compute the average variance per bin. It also computes the R² of your binned averages to the q-variance curve $\sigma^2(z) = \sigma_0^2 + (z-z_0)^2/2$.
 
-```bash
-python3 score_submission.py
-```
+The threshold for the challenge is R² ≥ 0.995 with no more than three free parameters (note the agreement of the parabola with data is 0.998). The price-change distribution in $z$ should also be time-invariant, so the model should be independent of period length $T$.
+
+To make your entry official:
 
 1. Fork this repository
 2. Place your model output in `submissions/your_team_name/` as:
