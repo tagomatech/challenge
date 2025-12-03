@@ -89,7 +89,7 @@ A: Yes, it implies that price-change follows the q-distribution which is a parti
 
 Q: Why should I enter this competition?
 
-A: For fun, an intellectual challenge, kudos ... but also because, if your existing model of price behaviour doesn't do q-variance, then it is missing important market structure.
+A: For fun, an intellectual challenge, kudos, to defend the honour of classical finance ... but also because, if your existing model of price behaviour doesn't do q-variance, then it is missing important market structure.
 
 Q: Can I use AI for the challenge?
 
