@@ -17,7 +17,7 @@ To take part in the challenge, use your model to produce a long time series of s
 ## Repository Contents
 
 The repository contains:
-- Parquet file in three parts containing price data for 352 stocks from the S&P 500 (stocks with less than $\sim 25$ years of data excluded)
+- Parquet file in three parts containing price data 1950-2025 for 401 stocks from the S&P 500 (stocks with less than 25 percent of dates excluded)
 - Full dataset generator `data_loader.py` to show how the data was generated
 - Baseline model fit `baseline/baseline_fit.py`
 - Figures showing q-variance and R² value for the actual data
@@ -25,7 +25,7 @@ The repository contains:
 - Scoring engine `code/score_submission.py` for your model
 - Jupyter notebook `notebooks/qvariance_single.ipynb` showing how to compute q-variance for a single asset
 
-The dataset used as a benchmark is for 352 stocks from the S&P 500, with periods T of 1–26 weeks.  
+The dataset used as a benchmark is for 401 stocks from the S&P 500, with periods T of 1–26 weeks.  
 
 Columns: ticker (str), date (date), T (int), sigma (float, annualized vol), z (float, scaled log return).
 
@@ -38,7 +38,7 @@ Python dependencies: pip install yfinance pandas numpy scipy matplotlib pyarrow
 
 ## Scoring the Challenge
 
-The challenge scores submissions on **one global R²** over the **entire dataset**. Since the q-variance parabola with $\sigma_0=0.255$ and $z_0 = 0.02$ gives a near-perfect fit (R² = 0.998) this curve can be used as a proxy for the real data. In other words, the aim is to fit the two-parameter parabola, using **up to three parameters** – must be easy, right?
+The challenge scores submissions on **one global R²** over the **entire dataset**. Since the q-variance parabola with $\sigma_0=0.259$ and $z_0 = 0.021$ gives a near-perfect fit (R² = 0.999) this curve can be used as a proxy for the real data. In other words, the aim is to fit the two-parameter parabola, using **up to three parameters** – must be easy, right?
 
 To get started, first simulate a long series of daily prices using your model, and save as a CSV file with a column named 'Price'. Then use `data_loader_csv.py` to compute the variances $\sigma^2(z)$ for each window and output the `dataset.parquet` file. The benchmark file has around 3 million rows, so you want a long simulation.
 
