@@ -2,7 +2,7 @@
 
 ## Model summary
 
-The tags model simulates a single asset price as a GBM with **daily stochastic variance** drawn from an Inverse-Gamma distribution with shape 3/2:
+This model simulates a single asset price as a GBM with **daily stochastic variance** drawn from an Inverse-Gamma distribution with shape 3/2:
 
 - Instantaneous variance per year on day *t*:
   \[
@@ -20,7 +20,7 @@ The tags model simulates a single asset price as a GBM with **daily stochastic v
   \]
 - The price path is obtained as \(S_{t+1} = S_t \exp(\Delta \log S_t)\).
 
-This is the classical Normal–Inverse-Gamma variance-mixture structure which yields the q-variance relation for a single observation
+This is kinda of classical Normal–Inverse-Gamma variance-mixture structure which yields the q-variance relation for a single observation
 \[
 \mathbb{E}[V \mid z] = \sigma_0^2 + \tfrac{1}{2} z^2
 \]
@@ -54,7 +54,7 @@ so that
 \]
 i.e. the process has **zero expected log-drift** over long horizons.  
 
-This correction explicitly accounts for the 1/252 time step and avoids the systematic long-run decay that would result from taking \(\mu = 0\) with the same volatility structure. The q-variance diagnostics use drift-adjusted returns, so this choice of \(\mu\) affects the **visual behaviour of the price path** but not the underlying q-variance structure.
+**NOTE** In this version of the model, I explicitly account for the 1/252 time step and avoids the systematic long-run decay that would result from taking \(\mu = 0\) with the same volatility structure. The q-variance diagnostics use drift-adjusted returns, so this choice of \(\mu\) affects the **visual behaviour of the price path** but not the underlying q-variance structure.
 
 ## Files in this folder
 
@@ -82,3 +82,4 @@ This correction explicitly accounts for the 1/252 time step and avoids the syste
 The `tags_qT_first10k.png` figure shows that, using only the first 10,000 days of a single simulated path, the estimated quadratic coefficient \(q(T)\) lies in a relatively tight band (roughly 0.28–0.38) and is **approximately stable in T**, i.e. there is no strong systematic horizon dependence. This is the desired scale-invariance feature of the q-variance structure.
 
 The coefficients are systematically below the theoretical value 0.5, reflecting finite-sample effects and the fact that \(\sigma_0\) and \(z_0\) are held fixed while only \(q(T)\) is fitted on a single realisation. When the full 100k-day simulation is used (`dataset.parquet`), the global q-variance fit converges back to the canonical curve with \(R^2 \approx 0.9988\), consistent with the theoretical coefficient of 0.5.
+
