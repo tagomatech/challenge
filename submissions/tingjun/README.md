@@ -21,7 +21,7 @@ The simulation consists of 500 samples, each spanning 10,000 days. Starting from
 - Variance Update:
 $V_i = V_{i-1} \exp\left( b \cdot |\ln(S_{i-1} / S_{i-2})| \right)$
 - Price Update:
-$S_i = S_{i-1} \exp\left( \mu - \frac{\sigma_i^2}{2} + \sigma_i \epsilon \right)$
+$S_i = S_{i-1} \exp\left( \mu - \sigma_i^{2}/2 + \sigma_i \epsilon \right)$
 
 Note:
 * $\sigma_i = \sqrt{V_i}$
