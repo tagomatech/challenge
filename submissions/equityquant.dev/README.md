@@ -164,5 +164,13 @@ The Poisson cap is set sufficiently high that it is **rarely binding** and does 
 Simulated price paths reproduce the q-variance relationship with a global
 goodness-of-fit of **R² ≈ 0.996**, exceeding the challenge threshold of **0.995**.
 
+## Dataset Notes
 
+Due to GitHub file size limitations, the submission dataset is provided in three parts:
+`dataset_part1.parquet`, `dataset_part2.parquet`, and `dataset_part3.parquet`.
+
+This format is fully supported by the official `score_submission.py` script, which
+automatically concatenates the split files when `dataset.parquet` is not present.
+No data has been modified or filtered; the three files together form the complete
+submission dataset.
 
