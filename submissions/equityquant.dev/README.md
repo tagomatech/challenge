@@ -47,9 +47,6 @@ $$
 Mean reversion ensures regime persistence while preventing degeneracy.  
 This latent process does **not** represent volatility.
 
-### Python Implementation 
-
-`tau = tau + kappa * (theta - tau_pos) * dt + eta * sqrt(tau_pos) * dW_tau`
 
 ---
 
@@ -85,11 +82,6 @@ This implies:
 - Returns are Gaussian *conditional* on $N_t$  
 - Returns are **heavy-tailed unconditionally**, consistent with subordinated stochastic processes  
 
-### Python Implementation 
-
-`N = Poisson(lam)`  
-`r_t = Normal(0, s_unit * sqrt(N)) if N > 0 else 0`
-
 ---
 
 ## Volatility Calibration
@@ -107,11 +99,6 @@ This ensures that:
 
 No additional free parameter is introduced at this stage;  
 the per-shock variance is fully determined by \( \sigma_0 \) and the stationary mean intensity.
-
-### Python Implementation 
-
-`lambda_typ = c / theta`  
-`s_unit^2 = (sigma0^2 / 252) / lambda_typ`
 
 ---
 
