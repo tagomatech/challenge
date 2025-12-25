@@ -8,62 +8,84 @@ HORIZONS = 5 * (np.arange(26) + 1)
 
 
 # =====================================================
-# CIR precision -> Poisson-weighted Gaussian mixture
+# Fast-mixing Tau–Poisson Gaussian mixture
 # =====================================================
 def simulate_price_series(
     n_days=300_000,
     s0=100.0,
-    sigma0=0.25,
-    kappa=0.02,
-    c_int=15.0,
+
+    # ----------- free parameters (≤ 3) -----------
+    sigma0=0.25,     # overall volatility scale
+    c_int=10.0,      # Poisson intensity scale
+    kappa=0.50,      # speed of mean reversion (fast mixing)
+    # ---------------------------------------------
+
     seed=1,
+
+    # fixed (do not tune)
     a_shape=1.5,
-    lam_cap=500.0
+    lam_cap=500.0,
+    burn_in=2000
 ):
+    """
+    Fast-mixing CIR-like precision tau -> Poisson N -> Gaussian sqrt(N)
+
+    Key properties:
+    - q-variance emerges structurally
+    - time-invariant
+    - robust to simulation length
+    - no skew hard-coded
+    """
+
     rng = np.random.default_rng(seed)
     dt = 1.0 / 252.0
     sqrt_dt = np.sqrt(dt)
 
-    # --- CIR target
+    # --- CIR stationary target for tau
     a = a_shape
     beta = sigma0**2
     theta = a / beta
     eta = np.sqrt(2.0 * kappa * theta / a)
 
+    # start tau at stationary mean
     tau = theta
-    logP = np.empty(n_days)
-    logP[0] = np.log(s0)
-    r = np.empty(n_days - 1)
 
-    # Typical lambda at long-run tau
-    lam_typ = min(lam_cap, c_int / theta)
-    lam_typ = max(lam_typ, 1e-8)
+    # stationary-mean lambda
+    lam_bar = min(lam_cap, c_int / theta)
+    lam_bar = max(lam_bar, 1e-8)
 
-    # Calibrate mixture variance
-    s_unit2 = (sigma0**2 / 252.0) / lam_typ
+    # fixed mixture variance scale
+    s_unit2 = (sigma0**2 / 252.0) / lam_bar
     s_unit = np.sqrt(s_unit2)
 
-    for t in range(1, n_days):
-        # CIR step
-        dW_tau = rng.standard_normal() * sqrt_dt
+    logP = np.empty(n_days + burn_in)
+    logP[0] = np.log(s0)
+
+    for t in range(1, n_days + burn_in):
+        # --- fast-mixing tau step
         tau_pos = max(tau, 0.0)
-        tau = tau + kappa * (theta - tau_pos) * dt + eta * np.sqrt(tau_pos) * dW_tau
+        tau = (
+            tau
+            + kappa * (theta - tau_pos) * dt
+            + eta * np.sqrt(tau_pos) * rng.standard_normal() * sqrt_dt
+        )
         tau = max(tau, 1e-10)
 
-        # Shock intensity
+        # --- Poisson intensity
         lam = c_int / tau
-        if lam > lam_cap:
-            lam = lam_cap
+        lam = min(lam, lam_cap)
 
-        # Poisson-weighted Gaussian mixture
+        # --- Poisson–Gaussian mixture
         N = rng.poisson(lam)
         r_t = rng.normal(0.0, s_unit * np.sqrt(N)) if N > 0 else 0.0
 
-        r[t - 1] = r_t
         logP[t] = logP[t - 1] + r_t
 
+    # drop burn-in
+    logP = logP[burn_in:]
     prices = np.exp(logP)
-    return prices, r
+
+    return prices
 
 
 # =====================================================
@@ -103,36 +125,31 @@ def build_qvariance_dataset_from_prices(prices, ticker="DRAGON"):
 
 
 # =====================================================
-# Main
+# Main (submission-style outputs)
 # =====================================================
 def main():
-    prices, returns = simulate_price_series(
-        n_days=120_000,
+    prices = simulate_price_series(
+        n_days=100_000,
         sigma0=0.25,
-        kappa=0.02,
         c_int=10.0,
-        seed=3
+        kappa=0.50,
+        seed=6
     )
 
     # -------------------------------------------------
-    # CSV (first 100K points)
+    # CSV requested by competition (first 100K points)
     # -------------------------------------------------
     n_out = 100_000
-
     df_out = pd.DataFrame({
         "Day": np.arange(n_out),
-        "Price": prices[:n_out],
-        "y": np.concatenate([[0.0], returns])[:n_out]
+        "Price": prices[:n_out]
     })
-
     df_out.to_csv("qvariance_simulation_100k.csv", index=False)
     print("Saved qvariance_simulation_100k.csv")
 
     # -------------------------------------------------
-    # Original outputs
+    # Q-variance dataset
     # -------------------------------------------------
-    pd.Series(prices, name="Price").to_csv("prices.csv", index=False)
-
     df_qv = build_qvariance_dataset_from_prices(prices)
     df_qv.to_parquet("dataset.parquet", index=False)
     print(f"Saved dataset.parquet with {len(df_qv):,} rows")
