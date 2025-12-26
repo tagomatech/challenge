@@ -12,7 +12,7 @@ The model utilizes three primary GARCH parameters. Through optimization against 
 | :--- | :--- | :--- |
 | **Target Vol ($\sigma$)** | **0.0950** | **Minimal Volatility ($\sigma_0$):** Sets the vertical baseline (the "floor" of the parabola). |
 | **Annual Return ($\mu$)** | **0.0844** | **Z-Shift ($z_{off}$):** Controls the horizontal asymmetry (displacement from zero). |
-| **Persistence ($\lambda$)** | **0.8000** | **Curvature/Steepness:** Lower $\lambda$ increases persistence, making the parabola **steeper and narrower** |
+| **Persistence ($\lambda$)** | **0.8000** | **Curvature/Steepness:** Lower $\lambda$ increases volatility, making the parabola **steeper and narrower** |
 
 ## Simulation Methodology
 The simulation generates a synthetic price history using independent paths of **2,500 trading days** each. To eliminate "local path luck" and ensure statistical smoothing, we utilize **2,000 samples** to create a total dataset of **5,000,000 trading days**.
@@ -73,7 +73,7 @@ By plotting $R^2$ as a function of total simulated days, we identified a clear t
 - **The Law of Large Numbers:** Beyond 2 million days, the fit quality stabilizes at an asymptote, confirming that the optimized GARCH parameters accurately represent the underlying Q-variance structure.
 
 ![Convergence Analysis](convergence_analysis.png)
-*Figure: $R^2$ score vs. Total Days. The 0.995 threshold is maintained after the 1M-day mark.*
+Figure: $R^2$ score vs. Total Days. The 0.995 threshold is maintained after the 1M-day mark.
 
 ## Project Structure
 - `price_generator.ipynb`: Vectorized simulation and optimization logic.
