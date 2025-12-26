@@ -6,13 +6,16 @@ The **GARCH(1,1) Volatility Model** (Generalized Autoregressive Conditional Hete
 This implementation maps the discrete-time GARCH process to the theoretical **Q-Variance** relationship. By simulating millions of trading days, we demonstrate that the stochastic variance updates converge to a deterministic parabolic fit: $V(z) = \sigma_0^2 + \frac{(z - z_{off})^2}{2}$.
 
 ## Parameters & Mapping Logic
-The model utilizes three primary GARCH parameters. Through optimization against a 5,000,000-day sample, these parameters were tuned to recover the specific geometry of the Q-variance parabola:
+The model utilizes four parameters to control the GARCH dynamics and recover the theoretical geometry of the Q-variance parabola:
 
-| GARCH Parameter | Value | Influence on Q-Variance Geometry |
+| Parameter | Value | Influence on Q-Variance Geometry |
 | :--- | :--- | :--- |
 | **Target Vol ($\sigma$)** | **0.0950** | **Minimal Volatility ($\sigma_0$):** Sets the vertical baseline (the "floor" of the parabola). |
 | **Annual Return ($\mu$)** | **0.0844** | **Z-Shift ($z_{off}$):** Controls the horizontal asymmetry (displacement from zero). |
-| **Persistence ($\lambda$)** | **0.8000** | **Curvature/Steepness:** Lower $\lambda$ increases volatility, making the parabola **steeper and narrower** |
+| **Persistence ($\lambda$)** | **0.8000** | **Curvature/Steepness:** Determines the quadratic coefficient; lower $\lambda$ increases volatility, making the parabola **steeper and narrower** |
+| **Mean Reversion ($\gamma$)** | **0.0100** | **Stability:** The buffer ensures $\lambda + \alpha < 1$, allowing the process to converge to a stationary mean. |
+
+
 
 ## Simulation Methodology
 The simulation generates a synthetic price history using independent paths of **2,500 trading days** each. To eliminate "local path luck" and ensure statistical smoothing, we utilize **2,000 samples** to create a total dataset of **5,000,000 trading days**.
@@ -22,10 +25,10 @@ The simulation generates a synthetic price history using independent paths of **
 - **Variance Update (GARCH Logic):**
 
 $$
-V_i = \omega + \lambda V_{i-1} + (1 - \lambda - 0.01) \cdot \left( \frac{S_{i-1} - S_{i-2}}{S_{i-2}} \right)^2
+V_i = \omega + \lambda V_{i-1} + (1 - \lambda - \gamma) \cdot \left( \frac{S_{i-1} - S_{i-2}}{S_{i-2}} \right)^2
 $$
 
-where $\omega = \frac{\sigma^{2}}{252} \cdot (1 - \lambda)$.
+Where $\omega = \frac{\sigma^{2}}{252} \cdot (1 - \lambda)$.
 
 - **Price Update:**
 
@@ -74,6 +77,7 @@ By plotting $R^2$ as a function of total simulated days, we identified a clear t
 
 ![Convergence Analysis](convergence_analysis.png)
 Figure: $R^2$ score vs. Total Days. The 0.995 threshold is maintained after the 1M-day mark.
+
 
 ## Project Structure
 - [price_generator2.ipynb](price_generator2.ipynb): Vectorized simulation and optimization logic.
